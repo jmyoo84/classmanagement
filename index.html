@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학급경제교실 — 6학년 학급 화폐 시스템</title>
+  <meta name="description" content="초등학교 6학년 학급 화폐와 게이미피케이션을 결합한 학급 관리 웹 앱. 코인 지급, 레벨·경험치, 상점, 1인 1역을 한 번에!">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════════════════════════════════
+       HOME  —  모드 선택
+  ══════════════════════════════════════════════════════════ -->
+  <div id="screen-home" class="screen active">
+    <div class="home-content">
+      <div class="home-logo">
+        <span class="logo-icon">🏫</span>
+        <h1 class="logo-title">학급경제교실</h1>
+        <p class="logo-subtitle">코인으로 성장하는 우리 반 이야기</p>
+      </div>
+
+      <div class="mode-cards">
+        <button class="mode-card mode-teacher" id="btn-teacher-mode">
+          <span class="mode-icon">👨‍🏫</span>
+          <div class="mode-label">교사 모드</div>
+          <div class="mode-desc">화폐 지급·차감, 상점 관리<br>역할 배정, 오늘 할 일 등록</div>
+          <span class="mode-arrow">→</span>
+        </button>
+
+        <button class="mode-card mode-student" id="btn-student-mode">
+          <span class="mode-icon">🎒</span>
+          <div class="mode-label">학생 모드</div>
+          <div class="mode-desc">내 코인·레벨 확인<br>상점 이용, 할 일 체크</div>
+          <span class="mode-arrow">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       TEACHER  —  교사 대시보드
+  ══════════════════════════════════════════════════════════ -->
+  <div id="screen-teacher" class="screen">
+
+    <header class="teacher-header">
+      <button class="btn-back" id="teacher-back">← 홈</button>
+      <h2 class="header-title">👨‍🏫 교사 대시보드</h2>
+      <div class="header-stats">
+        <span id="teacher-stat-students">👥 0명</span>
+        <span id="teacher-stat-coins">🪙 0</span>
+      </div>
+    </header>
+
+    <nav class="teacher-tabs">
+      <button class="tab-btn active" data-tab="students">👥 학생 관리</button>
+      <button class="tab-btn"        data-tab="shop">🏪 상점 관리</button>
+      <button class="tab-btn"        data-tab="roles">🎭 역할 배정</button>
+      <button class="tab-btn"        data-tab="tasks">📋 오늘 할 일</button>
+    </nav>
+
+    <div class="teacher-content">
+
+      <!-- Tab: Students -->
+      <div id="tab-students" class="tab-panel active">
+        <div class="panel-header">
+          <h3>학생 목록</h3>
+          <div class="panel-header-actions">
+            <button class="btn-secondary" id="btn-give-all-coins">🪙 전체 지급</button>
+            <button class="btn-primary"   id="btn-add-student">+ 학생 추가</button>
+          </div>
+        </div>
+        <div id="student-list-grid" class="student-list-grid"></div>
+      </div>
+
+      <!-- Tab: Shop -->
+      <div id="tab-shop" class="tab-panel">
+        <div class="panel-header">
+          <h3>상점 아이템</h3>
+          <button class="btn-primary" id="btn-add-item">+ 아이템 추가</button>
+        </div>
+        <div id="shop-items-grid" class="shop-items-grid"></div>
+      </div>
+
+      <!-- Tab: Roles -->
+      <div id="tab-roles" class="tab-panel">
+        <div class="panel-header">
+          <h3>1인 1역 배정</h3>
+          <button class="btn-primary" id="btn-add-role">+ 역할 추가</button>
+        </div>
+        <div id="roles-grid" class="roles-grid"></div>
+      </div>
+
+      <!-- Tab: Tasks -->
+      <div id="tab-tasks" class="tab-panel">
+        <div class="panel-header">
+          <h3>오늘 할 일</h3>
+          <button class="btn-primary" id="btn-add-task">+ 할 일 추가</button>
+        </div>
+        <div id="tasks-list" class="tasks-list"></div>
+      </div>
+
+    </div><!-- /teacher-content -->
+  </div><!-- /screen-teacher -->
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       STUDENT SELECT  —  이름 선택
+  ══════════════════════════════════════════════════════════ -->
+  <div id="screen-student-select" class="screen">
+    <div class="student-select-content">
+      <button class="btn-back" id="student-select-back">← 홈</button>
+
+      <div class="select-header">
+        <span class="select-icon">🎒</span>
+        <h2>나는 누구?</h2>
+        <p>내 이름을 골라 주세요!</p>
+      </div>
+
+      <div id="student-name-grid" class="student-name-grid"></div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       STUDENT MAIN  —  학생 대시보드
+  ══════════════════════════════════════════════════════════ -->
+  <div id="screen-student-main" class="screen">
+
+    <header class="student-header">
+      <button class="btn-back" id="student-main-back">← 이름 선택</button>
+      <div class="student-header-info">
+        <span id="student-name-display"></span>
+      </div>
+    </header>
+
+    <nav class="student-tabs">
+      <button class="tab-btn active" data-tab="student-home">🏠 홈</button>
+      <button class="tab-btn"        data-tab="student-shop">🏪 상점</button>
+      <button class="tab-btn"        data-tab="student-history">📜 내역</button>
+    </nav>
+
+    <div class="student-content">
+
+      <!-- Tab: Home -->
+      <div id="tab-student-home" class="tab-panel active">
+
+        <!-- Hero (Coins + Level) -->
+        <div class="student-hero">
+          <div class="hero-coin-card">
+            <div class="hero-coin-icon">🪙</div>
+            <div class="hero-coin-amount">
+              <span id="s-coins">0</span><span class="unit">코인</span>
+            </div>
+            <div class="hero-coin-label">현재 잔액</div>
+          </div>
+
+          <div class="hero-level-card">
+            <div class="hero-level-badge" id="s-level-badge">Lv.1</div>
+            <div class="hero-level-name"  id="s-level-name">새싹</div>
+            <div class="hero-exp-bar">
+              <div class="exp-bar-fill" id="s-exp-fill" style="width:0%"></div>
+            </div>
+            <div class="hero-exp-text">
+              <span id="s-exp">0</span> / <span id="s-exp-next">100</span> EXP
+            </div>
+          </div>
+        </div>
+
+        <!-- Role Badge -->
+        <div class="role-section">
+          <div class="role-badge">
+            <span class="role-emoji" id="s-role-emoji">❓</span>
+            <div>
+              <div class="role-title">나의 역할</div>
+              <div class="role-name" id="s-role-name">미배정</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's Tasks -->
+        <div class="tasks-section">
+          <h3 class="section-title">📋 오늘 할 일</h3>
+
+          <div class="s-tasks-group">
+            <div class="tasks-group-label">학급 공통 미션</div>
+            <div id="s-tasks-common-list" class="task-items"></div>
+          </div>
+
+          <div id="s-tasks-role" class="s-tasks-group" style="display:none">
+            <div class="tasks-group-label">내 역할 할 일</div>
+            <div id="s-tasks-role-list" class="task-items"></div>
+          </div>
+        </div>
+
+      </div><!-- /tab-student-home -->
+
+      <!-- Tab: Shop -->
+      <div id="tab-student-shop" class="tab-panel">
+        <div class="shop-header-info">
+          <span class="shop-balance">💰 보유 코인: <strong id="s-shop-coins">0</strong></span>
+        </div>
+        <div id="s-shop-grid" class="student-shop-grid"></div>
+      </div>
+
+      <!-- Tab: History -->
+      <div id="tab-student-history" class="tab-panel">
+        <h3 class="section-title">📦 구매 내역</h3>
+        <div id="s-purchase-history" class="purchase-history-list"></div>
+
+        <h3 class="section-title" style="margin-top:1.5rem">💰 코인 내역</h3>
+        <div id="s-coin-history" class="coin-history-list"></div>
+      </div>
+
+    </div><!-- /student-content -->
+  </div><!-- /screen-student-main -->
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       MODAL
+  ══════════════════════════════════════════════════════════ -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div id="modal-box" class="modal-box">
+      <h3 id="modal-title"></h3>
+      <div id="modal-body"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modal-cancel">취소</button>
+        <button class="btn-primary"   id="modal-confirm">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+</div><!-- /#app -->
+
+<script src="js/store.js"></script>
+<script src="js/teacher.js"></script>
+<script src="js/student.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
